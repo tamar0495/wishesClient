@@ -7,25 +7,25 @@ const WishForm = ({ generateWish }) => {
   const [wishType, setWishType] = useState('');
   const [recipientName, setRecipientName] = useState('');
   const [eventType, setEventType] = useState('');
-  const [age, setAge] = useState('');
-  const [spouseName, setSpouseName] = useState('');
-  const [yearsOfMarriage, setYearsOfMarriage] = useState('');
-  const [testSubject, setTestSubject] = useState('');
-  const [teacherName, setTeacherName] = useState('');
-
-  const handleGenerateWish = () => {
+  const [additoinal, setAdditional] = useState('');
+  const handleGenerateWish = async () => {
     const wishObject = {
-      mood,
-      wishType,
-      recipientName,
-      eventType,
-      age,
-      spouseName,
-      yearsOfMarriage,
-      testSubject,
-      teacherName,
+      mood : mood,
+      wishType : wishType,
+      person : recipientName,
+      event : additoinal +' '+ eventType
     };
-    // generateWish(wishObject);
+     
+    const response = await fetch('localhost:8989/prompts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(wishObject),
+    });
+  
+    const responseData = await response.json();
+    console.log('Response from server:', responseData);
   };
   const navigate = useNavigate();
 
@@ -62,29 +62,27 @@ const WishForm = ({ generateWish }) => {
       {eventType === 'birthday' && (
         <div>
           <label>Age: </label>
-          <input type="number" value={age} onChange={(e) => setAge(e.target.value)} />
+          <input type="number" value={additoinal} onChange={(e) => setAdditional(e.target.value)} />
         </div>
       )}
       {eventType === 'anniversary' && (
         <div>
-          <label>Spouse's Name: </label>
-          <input type="text" value={spouseName} onChange={(e) => setSpouseName(e.target.value)} />
-          <br /> <br />
           <label>Years of Marriage: </label>
-          <input type="number" value={yearsOfMarriage} onChange={(e) => setYearsOfMarriage(e.target.value)} />
+          <input type="number" value={additoinal} onChange={(e) => setAdditional(e.target.value)} />
         </div>
       )}
       {eventType === 'test' && (
         <div>
           <label>Test Subject: </label>
-          <input type="text" value={testSubject} onChange={(e) => setTestSubject(e.target.value)} />
+          <input type="text" value={additoinal} onChange={(e) => setAdditional(e.target.value)} />
           <br /><br />
-          <label>Teacher's Name: </label>
-          <input type="text" value={teacherName} onChange={(e) => setTeacherName(e.target.value)} />
+         
         </div>
       )}
           <br />
-      <button onClick={()=>navigate('/WishDisplay')}>
+      <button onClick={handleGenerateWish}>
+        {/* // ()=>navigate('/WishDisplay') */}
+      
         generate a new wish</button>
 
     </div>
